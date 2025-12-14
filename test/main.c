@@ -55,7 +55,7 @@ void append(Node **root, int data) {
 void print_list(Node **list) {
   Node *cur = *list;
   while (cur) {
-    printf("%d ", cur->data);
+    printf("%d\n", cur->data);
     cur = cur->next;
   }
 }
@@ -79,6 +79,27 @@ bool search(Node **root, int k) {
   }
   if (!c)
     return false;
+  return true;
+}
+
+bool removeNthNode(Node **root, int key) {
+  Node *cur = *root;
+  Node *prev = NULL;
+  while (cur && cur->data != key) {
+    prev = cur;
+    cur = cur->next;
+  }
+  if (!cur) {
+    printf("Item not found for remove \n");
+    return false;
+  }
+  if (prev == NULL) {
+    *root = cur->next;
+  } else {
+    prev->next = cur->next;
+  }
+  free(cur);
+
   return true;
 }
 
@@ -106,15 +127,13 @@ int main() {
   double cpu_time_used;
   start = clock();
 
-  if (search(&root, 3)) {
-    printf("Found item %d\n", 3);
-  } else {
-    printf("Not Found item %d\n", 3);
-  }
-
   end = clock();
   cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-  printf("Time take : %f seconds\n ", cpu_time_used);
+  printf("Time take : %f seconds\n", cpu_time_used);
+
+  removeNthNode(&root, 5);
+  removeNthNode(&root, 1);
+  print_list(&root);
 
   free_link_list(&root);
 
