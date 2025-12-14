@@ -31,11 +31,6 @@ void free_link_list(Node **root) {
 }
 void prepend(Node **head, int data) {
   Node *n = create_node(data);
-  if (*head == NULL) {
-    *head = n;
-    return;
-  }
-
   n->next = *head;
   *head = n;
 }
@@ -53,15 +48,15 @@ void append(Node **root, int data) {
 }
 
 void print_list(Node **list) {
+  if (*list == NULL)
+    return;
   Node *cur = *list;
-  while (cur) {
-    printf("%d\n", cur->data);
-    cur = cur->next;
-  }
+  printf("%d\n", cur->data);
+  print_list(&cur->next);
 }
+
 bool insert_after(Node **root, int k, int v) {
   Node *c = *root;
-
   while (c && c->data != k)
     c = c->next;
   if (!c)
@@ -103,6 +98,21 @@ bool removeNthNode(Node **root, int key) {
   return true;
 }
 
+void reverse(Node **root) {
+  if (root == NULL)
+    return;
+  Node *cur = *root;
+  Node *n = create_node(cur->data);
+
+  while (cur->next) {
+    cur = cur->next;
+    prepend(&n, cur->data);
+  }
+
+  free_link_list(root);
+  *root = n;
+}
+
 int main() {
 
   FILE *fptr;
@@ -131,8 +141,7 @@ int main() {
   cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
   printf("Time take : %f seconds\n", cpu_time_used);
 
-  removeNthNode(&root, 5);
-  removeNthNode(&root, 1);
+  reverse(&root);
   print_list(&root);
 
   free_link_list(&root);
