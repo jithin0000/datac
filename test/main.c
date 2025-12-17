@@ -113,19 +113,18 @@ void reverse(Node **root) {
   *root = n;
 }
 
-void reverse_single(Node **root) {
-  Node *prev = NULL;
-  Node *cur = *root;
-  Node *temp = NULL;
-  while (cur->next) {
-    temp = cur->next;
-    cur->next = prev;
-    prev = cur;
-    cur = temp;
+void rreverse(Node **root) {
+  if (root == NULL || (*root)->next == NULL) {
+    return;
   }
-  cur->next = prev;
+  Node *first = *root;
+  Node *rest = first->next;
+  rreverse(&rest);
 
-  *root = cur;
+  first->next->next = first;
+  first->next = NULL;
+
+  *root = rest;
 }
 
 int main() {
@@ -156,7 +155,7 @@ int main() {
   cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
   printf("Time take : %f seconds\n", cpu_time_used);
 
-  reverse_single(&root);
+  rreverse(&root);
   print_list(&root);
 
   free_link_list(&root);
