@@ -68,12 +68,15 @@ bool insert_after(Node **root, int k, int v) {
 }
 
 bool search(Node **root, int k) {
+  int n = 0;
   Node *c = *root;
   while (c && c->data != k) {
+    n++;
     c = c->next;
   }
   if (!c)
     return false;
+  printf("found item %d on position %d ", c->data, n);
   return true;
 }
 
@@ -114,7 +117,7 @@ void reverse(Node **root) {
 }
 
 void rreverse(Node **root) {
-  if (root == NULL || (*root)->next == NULL) {
+  if (*root == NULL || (*root)->next == NULL) {
     return;
   }
   Node *first = *root;
@@ -127,10 +130,12 @@ void rreverse(Node **root) {
   *root = rest;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+
+  srand(time(NULL));
 
   FILE *fptr;
-  char fileName[] = "./input.txt";
+  char *fileName = argv[1];
   fptr = fopen(fileName, "r");
 
   if (fptr == NULL) {
@@ -138,26 +143,30 @@ int main() {
     exit(1);
   }
 
-  char buffer[100];
-  Node *root;
+  Node *root = NULL;
+  char buffer[1024];
 
   while (fgets(buffer, sizeof(buffer), fptr) != NULL) {
     append(&root, atoi(buffer));
   }
-
   fclose(fptr);
+
+  int search_item = 0;
+  printf("Enter a number : \n");
+  scanf("%d", &search_item);
 
   clock_t start, end;
   double cpu_time_used;
   start = clock();
+  if (search(&root, search_item) == false) {
+    printf("search Miss :: \n");
+  }
 
   end = clock();
   cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
   printf("Time take : %f seconds\n", cpu_time_used);
 
-  rreverse(&root);
-  print_list(&root);
-
+  // print_list(&root);
   free_link_list(&root);
 
   return EXIT_SUCCESS;
